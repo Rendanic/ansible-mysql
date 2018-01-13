@@ -1,0 +1,41 @@
+---
+- name: copy my.cnf
+  template: src=my.cnf.j2 dest=/etc/my.cnf backup=yes
+  tags: mycnf
+
+- name: create database
+  shell: test -d /var/lib/mysql/mysql || mysqld --initialize-insecure --user=mysql
+
+- name: start MySQL Instance
+  service: name=mysqld state=started
+
+- name: Enable MySQL Instance
+  service: name=mysqld enabled=True
+
+- name: create Backup-User for Percona
+  mysql_user: name="{{ percona_backupuser }}"
+              host="{{ percona_backuphost }}"
+              encrypted="{{ percona_backupencryptedpass }}"
+              password="{{ percona_backuppassword }}"
+              check_implicit_admin=yes
+              priv='*.*:RELOAD/*.*:LOCK TABLES/*.*:PROCESS/*.*:REPLICATION CLIENT'
+              login_user="root"
+              login_password="root"
+              state=present
+  when: install_percona
+  tags: percona
+  ignore_errors: yes
+
+
+- name: Set new root Password from mysql_rootpasswordencrypted
+  mysql_user: name=root
+              host="localhost"
+              encrypted=yes
+              password="{{ mysql_rootpasswordencrypted }}"
+              check_implicit_admin=yes
+              login_user="root"
+              login_password=""
+              state=present
+  tags: setrootpwd
+  ignore_errors: yes
+

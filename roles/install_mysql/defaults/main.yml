@@ -1,0 +1,2 @@
+---
+host_fs_layout_vgdisks: "{%- for disk in item.disk -%} {{disk.pvname}} {%- if not loop.last -%},{%- endif -%}{% endfor %}"

@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+{% for cnfsec in mysqlcnf %}
+
+
+[{{ cnfsec.mycnfsection }}]
+
+{% for a in cnfsec.parameter %}
+{{ a[0] }} = {{ a[1] }}
+{% endfor %}
+{% endfor %}

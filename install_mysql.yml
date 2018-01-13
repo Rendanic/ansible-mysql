@@ -1,0 +1,10 @@
+---
+
+- hosts: mysqlserver
+  become: yes
+  become_user: root
+
+  roles:
+     - install_mysql
+     - percona_software
+     - createdb

@@ -1,0 +1,84 @@
+---
+
+- name: enable Repos
+  shell: yum-config-manager --enable {{ item }}
+  with_items:
+     - ol7_MySQL57
+     - ol7_addons
+     - ol7_optional_latest
+
+- name: Install MySQL + Tools
+  yum: name={{ item }} state=present
+  with_items: "{{ mysql_rpm }}"
+
+- name: filesystem | Create directories
+  file: path={{ item.1.mntp }} state=directory owner=root group=root mode=755
+  with_subelements:
+      - "{{host_fs_layout}}"
+      - filesystem
+  tags: hostfs
+
+- name: filesystem | Create partition and pv
+  shell:  parted -a optimal {{ item.1.device }} "mklabel gpt mkpart primary 1 -1"
+  args:
+     creates: "{{ item.1.pvname }}"
+  with_subelements:
+     - "{{host_fs_layout}}"
+     - disk
+  when: configure_host_disks
+  tags: hostfs
+
+- name: filesystem | Create vg
+  lvg: vg={{ item.vgname }} pvs={{ host_fs_layout_vgdisks }} state={{ item.state }}
+  with_items: "{{host_fs_layout}}"
+  when: configure_host_disks
+  tags: hostfs
+
+- name: filesystem | create lv
+  lvol: vg={{ item.0.vgname }} lv={{ item.1.lvname }} size={{ item.1.lvsize }} state=present shrink=no
+  with_subelements:
+     - "{{host_fs_layout}}"
+     - filesystem
+  when: configure_host_disks
+  tags: hostfs
+
+- name: filesystem | create fs
+  filesystem: fstype={{ item.1.fstype }} dev=/dev/{{ item.0.vgname }}/{{ item.1.lvname }}
+  with_subelements:
+     - "{{host_fs_layout}}"
+     - filesystem
+  when: configure_host_disks
+  tags: hostfs
+
+- name: filesytem | mount dir
+  mount: name={{ item.1.mntp }} src=/dev/{{ item.0.vgname }}/{{ item.1.lvname }} dump=1 passno=2 fstype={{ item.1.fstype }} state=mounted
+  with_subelements:
+     - "{{host_fs_layout}}"
+     - filesystem
+  when: configure_host_disks
+  tags: hostfs
+
+- name: filesystem | Change permission on directories
+  file: path={{ item.1.mntp }} state=directory owner=mysql group=mysql mode=770
+  with_subelements:
+     - "{{host_fs_layout}}"
+     - filesystem
+  tags: hostfs
+
+- name: create home for mysql
+  file: 
+     path:  /home/mysql 
+     owner: mysql
+     group: mysql
+     mode:  0750
+     state: directory
+  tags: osuser
+  
+- name: new home for mysql user
+  user: 
+     name:  mysql
+     shell: /bin/bash 
+     home:  /home/mysql
+     state: present
+     generate_ssh_key: True
+  tags: osuser

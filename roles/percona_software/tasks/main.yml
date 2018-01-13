@@ -1,0 +1,20 @@
+---
+
+- name: Add Percona Repository
+  yum: name={{ percona_repo }} state=present
+  when: install_percona
+  tags: percona
+
+- name: Enable aditional Repositories for Percone
+  shell: yum-config-manager --enable {{ item }}
+  with_items:
+     - ol7_optional_latest
+     - ol7_addons
+  when: install_percona
+  tags: percona
+
+- name: Install Percona Tools
+  yum: name={{ item }} state=present
+  with_items: "{{ percona_rpm }}"
+  when: install_percona
+  tags: percona

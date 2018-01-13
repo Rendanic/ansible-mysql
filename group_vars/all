@@ -1,0 +1,19 @@
+     # example password: root
+     mysql_rootpasswordencrypted: "*81F5E21E35407D884A6CD4A731AEBFB6AF209E1B"
+
+     mysql_rpm:
+        - MySQL-python
+        - mysql-server
+        - mytop
+        - mylvmbackup
+
+     install_percona: True
+     percona_backupuser:          bkpuser
+     percona_backuphost:          localhost
+     percona_backuppassword:      veryGeheim
+     percona_backupencryptedpass: No
+
+     percona_repo: http://www.percona.com/downloads/percona-release/redhat/0.1-4/percona-release-0.1-4.noarch.rpm
+     percona_rpm:
+        - percona-xtrabackup-24
+        - percona-toolkit

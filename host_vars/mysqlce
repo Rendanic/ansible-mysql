@@ -1,0 +1,48 @@
+     mysqlcnf:
+        # mycnfsection is [<mycnfsection>] in my.cnf
+        - mycnfsection: client
+          parameter: 
+             - [ 'port', '3306' ]
+             - [ 'socket', '/var/lib/mysql/mysql.sock' ]
+
+        - mycnfsection: mysqldump
+          parameter: 
+             - [ 'max_allowed_packet', '16M' ]
+
+        - mycnfsection: mysqld
+          parameter: 
+             - [ 'server-id',                        '11' ]
+             - [ 'port',                             '3306' ]
+             - [ 'bind-address',                     '0.0.0.0' ]
+             - [ 'socket',                           '/var/lib/mysql/mysql.sock' ]
+             - [ 'pid-file',                         '/var/run/mysqld/mysqld.pid' ]
+             - [ 'log-error',                        '/var/log/mysqld.log' ]
+             - [ 'log_bin',                          'binary-log' ]
+             - [ 'binlog_format',                    'row' ]
+             - [ 'expire_logs_days',                 '7' ]
+             - [ 'max_connections',                  '151' ]
+             - [ 'innodb_file_per_table',            '1' ]
+             - [ 'innodb_buffer_pool_size',          '256M' ]
+             - [ 'innodb_log_file_size',             '64M' ]
+             - [ 'innodb_log_buffer_size',           '8M' ]
+             - [ 'innodb_flush_log_at_trx_commit',   '1' ]
+             - [ 'innodb_lock_wait_timeout',         '50' ]
+             - [ 'ignore-db-dir',                    'lost+found' ]
+             
+             # - [ 'performance_schema_consumer_events_statements_history_long', 'ON' ]
+
+        - mycnfsection: xtrabackup
+          parameter: 
+             - ['target_dir',                        '/backup/xtrabackup' ]
+             - ['datadir',                           '/var/lib/mysql/']
+             - ['user',                              'bkpuser']
+             - [ 'socket',                           '/var/lib/mysql/mysql.sock' ]
+
+     configure_host_disks: True
+     host_fs_layout:
+        - vgname: rootvg
+          state: present
+          filesystem:
+             - {mntp: /var/lib/mysql, lvname: mysqllv, lvsize: 4G, fstype: ext4}
+          disk:
+             - {device: /dev/sda, pvname: /dev/sda2}

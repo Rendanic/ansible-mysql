@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+
+Cmnd_Alias MYSQL = /bin/systemctl stop mysqld, /bin/systemctl start mysqld, /usr/bin/mylvmbackup
+mysql   ALL=(ALL) NOPASSWD:     MYSQL
+

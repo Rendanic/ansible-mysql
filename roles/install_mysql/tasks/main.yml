@@ -11,6 +11,10 @@
   yum: name={{ item }} state=present
   with_items: "{{ mysql_rpm }}"
 
+- name: add sudoers for systemctl start/stop mysqld and mylvmbackup
+  template: src=sudoers_mysql dest=/etc/sudoers.d/mysql group=root owner=root mode=0644
+  tags: sudo
+
 - name: filesystem | Create directories
   file: path={{ item.1.mntp }} state=directory owner=root group=root mode=755
   with_subelements:

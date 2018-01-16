@@ -86,3 +86,7 @@
      state: present
      generate_ssh_key: True
   tags: osuser
+
+- name: copy mybinlogcopy.sh
+  copy: src=mybinlogcopy.sh dest=/usr/local/bin mode=755 owner=root group=root backup=no
+  tags: mybinlogcopy

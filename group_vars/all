@@ -6,6 +6,11 @@
         - mysql-server
         - mytop
         - mylvmbackup
+        - holland
+        - holland-mysql
+        - holland-mysqldump
+        - holland-mysqllvm
+        - holland-xtrabackup
 
      install_percona: True
      percona_backupuser:          bkpuser

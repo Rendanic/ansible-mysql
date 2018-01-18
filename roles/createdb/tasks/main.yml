@@ -12,6 +12,10 @@
 - name: Enable MySQL Instance
   service: name=mysqld enabled=True
 
+- name: create initial upgrade info
+  shell: test -f /var/lib/mysql/mysql_upgrade_info || mysql_upgrade -u root
+  tags: mysql_upgrade
+
 - name: create Backup-User for Percona
   mysql_user: name="{{ percona_backupuser }}"
               host="{{ percona_backuphost }}"

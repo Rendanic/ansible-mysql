@@ -2,8 +2,8 @@
 #
 # (c) 2018 by Thorsten Bruhns (thorsten.bruhns@opitz-consulting.com)
 #
-# CREATE USER 'binlogcopy'@'localhost'  IDENTIFIED BY 'secretpassword';
-# GRANT SUPER, RELOAD ON *.*  TO 'binlogcopy'@'localhost';
+# CREATE USER 'mybinlogcopy'@'localhost'  IDENTIFIED BY 'secretpassword';
+# GRANT SUPER, RELOAD ON *.*  TO 'mybinlogcopy'@'localhost';
 #
 # Plese define a connection with:
 # mysql_config_editor set --login-path=mybinlogcopy --host=localhost --user=mybinlogcopy -p
@@ -46,6 +46,13 @@ login_path=mybinlogcopy
 
 function setenv()
 {
+    echo Logincheck
+    mysql --login-path=${login_path} --skip-column-names -B -e quit
+    if [ $? -ne 0 ] ; then
+        echo "login not possible"
+        exit 20
+   fi
+
     binlog_index=$(mysql --login-path=${login_path} --skip-column-names -B -e "SHOW  GLOBAL VARIABLES LIKE 'log_bin_index'" | cut -f2-)
     test -f $binlog_index || exit 10
 
@@ -98,14 +105,16 @@ binlog_last=$(basename $(tail -1 $binlog_index))
 
 cd $binlog_dir
 
+date +%c
 echo copy binary logs and delete old files before $binlog_last
 cp ${binlog_list} ${dest_dir}
 if [ $? -eq 0 ] ; then
+    date +%c
     echo "PURGE BINARY LOGS"
     mysqlcmd "PURGE BINARY LOGS TO '$binlog_last'"
 
-    echo "compress BINARY LOGS"
     date +%c
+    echo "compress BINARY LOGS"
     cd ${dest_dir}
     gzip -1 ${binlog_list}
 fi

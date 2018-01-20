@@ -12,6 +12,10 @@
         - mycnfsection: mysqld
           parameter: 
              - [ 'server-id',                        '11' ]
+             - [ 'autocommit',                       'OFF' ]
+             - [ 'sync_binlog',                      '0' ]
+             - [ 'innodb_flush_log_at_trx_commit',   '0' ]
+             - [ 'innodb_buffer_pool_size',          '256M' ]
              - [ 'port',                             '3306' ]
              - [ 'bind-address',                     '0.0.0.0' ]
              - [ 'socket',                           '/var/lib/mysql/mysql.sock' ]
@@ -22,10 +26,9 @@
              - [ 'expire_logs_days',                 '7' ]
              - [ 'max_connections',                  '151' ]
              - [ 'innodb_file_per_table',            '1' ]
-             - [ 'innodb_buffer_pool_size',          '256M' ]
+             - [ 'innodb_flush_method',              'O_DIRECT' ]
              - [ 'innodb_log_file_size',             '64M' ]
              - [ 'innodb_log_buffer_size',           '8M' ]
-             - [ 'innodb_flush_log_at_trx_commit',   '1' ]
              - [ 'innodb_lock_wait_timeout',         '50' ]
              - [ 'ignore-db-dir',                    'lost+found' ]
              

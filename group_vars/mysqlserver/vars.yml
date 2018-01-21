@@ -45,3 +45,46 @@
              - {mntp: /var/lib/mysql, lvname: mysqllv, lvsize: 3G, fstype: xfs}
           disk:
              - {device: /dev/sda, pvname: /dev/sda2}
+
+     mysqlusers:
+        - name:           admin
+          create:         true
+          host:           "%"
+          password:       "{{ mysql_password_admin }}"
+          priv:           '*.*:ALL'
+
+        - name:           mybinlogcopy
+          create:         true
+          host:           "localhost"
+          password:       "{{ mysql_password_mybinlogcopy }}"
+          priv:           '*.*:RELOAD,SUPER'
+
+        - name:           mysqldump
+          create:         true
+          host:           "localhost"
+          password:       "{{ mysql_password_mysqldump }}"
+          priv:           '*.*:SELECT,FILE,LOCK TABLES,SHOW VIEW,TRIGGER,EVENT,RELOAD,REPLICATION CLIENT'
+
+        - name:           mylvmbackup
+          create:         true
+          host:           "localhost"
+          password:       "{{ mysql_password_mylvmbackup }}"
+          priv:           '*.*:RELOAD,REPLICATION CLIENT/mysql.*:SELECT'
+
+        - name:           mysqlbackup
+          create:         False
+          host:           "localhost"
+          password:       "{{ mysql_password_mysqlbackup }}"
+          priv:           '*.*:RELOAD,REPLICATION CLIENT,PROCESS,PROCESS/mysql.backup_progress:CREATE,INSERT,DROP,UPDATE/mysql.backup_history:CREATE,INSERT,SELECT,DROP,UPDATE,ALTER'
+
+        - name:           bkpuser
+          create:         true
+          host:           "localhost"
+          password:       "{{ mysql_password_bkpuser }}"
+          priv:           '*.*:RELOAD,LOCK TABLES,PROCESS,REPLICATION CLIENT'
+
+        - name:           replication
+          create:         true
+          host:           "%"
+          password:       "{{ mysql_password_replication }}"
+          priv:           '*.*:REPLICATION SLAVE'

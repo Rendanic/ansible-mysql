@@ -12,30 +12,26 @@
 - name: Enable MySQL Instance
   service: name=mysqld enabled=True
 
-- name: create Backup-User for Percona
-  mysql_user: name="{{ percona_backupuser }}"
-              host="{{ percona_backuphost }}"
-              encrypted="{{ percona_backupencryptedpass }}"
-              password="{{ percona_backuppassword }}"
-              check_implicit_admin=yes
-              priv='*.*:RELOAD/*.*:LOCK TABLES/*.*:PROCESS/*.*:REPLICATION CLIENT'
-              login_user="root"
-              login_password="root"
-              state=present
-  when: install_percona
-  tags: percona
-  ignore_errors: yes
-
-
-- name: Set new root Password from mysql_rootpasswordencrypted
+- name: Set new root Password from mysql_password_root
   mysql_user: name=root
               host="localhost"
-              encrypted=yes
-              password="{{ mysql_rootpasswordencrypted }}"
+              password="{{ mysql_password_root }}"
               check_implicit_admin=yes
               login_user="root"
-              login_password=""
               state=present
   tags: setrootpwd
   ignore_errors: yes
 
+- name: create Users in MySQL
+  no_log: true
+  mysql_user: name="{{ item.name }}"
+              host="{{ item.host }}"
+              password="{{ item.password }}"
+              priv='{{ item.priv }}'
+              login_user="root"
+              login_password="{{ mysql_password_root }}"
+              state=present
+  with_items: "{{ mysqlusers }}"
+  when: item.create == True
+  tags: dbusers
+  ignore_errors: yes

@@ -34,8 +34,6 @@
           parameter: 
              - [ 'target_dir', '/backup/xtrabackup' ]
              - ['datadir', '/var/lib/mysql/']
-             - ['user', 'bkpuser']
-             - ['password', 'veryGeheim']
 
      configure_host_disks: True
      host_fs_layout:

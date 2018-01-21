@@ -8,3 +8,4 @@
      - install_mysql
      - percona_software
      - createdb
+     - mysql_config_editor

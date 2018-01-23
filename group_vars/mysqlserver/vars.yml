@@ -86,3 +86,18 @@
           host:           "%"
           password:       "{{ mysql_password_replication }}"
           priv:           '*.*:REPLICATION SLAVE'
+
+     mysqldumpdir: /backup/mysqldump
+
+     # following files copied to /home/mysql/etc
+     mysqlcustomcnf:
+        - mydumpdaily.cnf
+
+     mysqlcron:
+        - name: mysqldump_full
+          disabled: False
+          day: "*"
+          weekday: "1-6"
+          hour: "02"
+          minute: "30"
+          jobname: "mysqldump --defaults-extra-file=/home/mysql/etc/mydumpdaily.cnf --login-path=mysqldump | gzip -1 -c > {{ mysqldumpdir }}/mysqldump_$(date '+%y%m%d%H%M').sql.gz"

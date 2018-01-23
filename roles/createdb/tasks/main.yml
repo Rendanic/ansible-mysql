@@ -35,3 +35,51 @@
   when: item.create == True
   tags: dbusers
   ignore_errors: yes
+
+- name: Create /home/mysql/etc directory
+  file:
+    path: /home/mysql/etc
+    state: directory
+    mode: 0700
+    owner: mysql
+  
+- name: Copy custom cnf-Files
+  template:
+    src:    "{{ item }}.j2"
+    dest:   /home/mysql/etc/{{ item }}
+    mode:   0600
+    group:  mysql
+    owner:  mysql
+    backup: True
+  with_items:
+     - "{{ mysqlcustomcnf }}"
+  tags: 
+    - cron
+
+- name: Create Backup Directories for MySQL
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0750
+    owner: mysql
+    group: mysql
+  with_items:
+    - "{{ mysqldumpdir }}"
+    - "{{ mylvmbackupdir }}"
+  tags: 
+    - cron
+
+- name: Create crontab entries for MySQL
+  cron:
+    name: "{{ item.name }}"
+    cron_file: "/etc/cron.d/ansible_mysql"
+    user: "mysql"
+    disabled: "{{ item.disabled }}"
+    day: "{{ item.day }}"
+    weekday: "{{ item.weekday }}"
+    hour: "{{ item.hour }}"
+    minute: "{{ item.minute }}"
+    job: "{{ item.jobname }}"
+  with_items:
+     - "{{ mysqlcron }}"
+  tags: cron

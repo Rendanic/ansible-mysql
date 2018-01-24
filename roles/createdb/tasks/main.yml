@@ -38,10 +38,13 @@
 
 - name: Create /home/mysql/etc directory
   file:
-    path: /home/mysql/etc
+    path: "{{ item }}"
     state: directory
     mode: 0700
     owner: mysql
+  with_items:
+    - /home/mysql/etc
+    - /home/mysql/log
   
 - name: Copy custom cnf-Files
   template:
@@ -64,6 +67,7 @@
     owner: mysql
     group: mysql
   with_items:
+    - "{{ mybinlogbackupdir }}"
     - "{{ mysqldumpdir }}"
     - "{{ mylvmbackupdir }}"
   tags: 

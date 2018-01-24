@@ -16,7 +16,7 @@ mountdir=/var/tmp/mylvmbackup/mnt/
 compress=gzip
  
 [misc]
-backuptype=tar
+backuptype={{ mylvmbackuptype | default('tar') }}
 backupretention=0
 datefmt=%Y%m%d_%H%M%S
 innodb_recover=0

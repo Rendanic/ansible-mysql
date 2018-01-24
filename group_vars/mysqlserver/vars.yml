@@ -87,8 +87,10 @@
           password:       "{{ mysql_password_replication }}"
           priv:           '*.*:REPLICATION SLAVE'
 
+     mybinlogbackupdir: /backup/mybinlog
      mysqldumpdir: /backup/mysqldump
      mylvmbackupdir: /backup/mylvmbackup
+     mylvmbackuptype: zbackup   # default is tar
 
      # following files copied to /home/mysql/etc
      mysqlcustomcnf:
@@ -96,6 +98,14 @@
         - mylvmdaily.cnf
 
      mysqlcron:
+        - name: mybinlogcopy
+          disabled: False
+          day: "*"
+          weekday: "*"
+          hour: "*"
+          minute: "15"
+          jobname: "/usr/local/bin/mybinlogcopy.sh -d {{ mybinlogbackupdir }} >> /home/mysql/log/mybinlogcopy.log 2>&1"
+
         - name: mysqldump_full
           disabled: False
           day: "*"

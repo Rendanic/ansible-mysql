@@ -45,7 +45,8 @@
   with_items:
     - /home/mysql/etc
     - /home/mysql/log
-  
+    - /home/mysql/etc/mylvmbackuphook  
+
 - name: Copy custom cnf-Files
   template:
     src:    "{{ item }}.j2"
@@ -72,6 +73,18 @@
     - "{{ mylvmbackupdir }}"
   tags: 
     - cron
+
+- name: copy Hooks for mylvmbackup
+  template:
+    src:    "{{ item }}.j2"
+    dest:   /home/mysql/etc/mylvmbackuphook/{{ item }}
+    mode:   0700
+    group:  mysql
+    owner:  mysql
+    backup: True
+  with_items:
+     - "backupsuccess"
+
 
 - name: Create crontab entries for MySQL
   cron:

@@ -88,10 +88,12 @@
           priv:           '*.*:REPLICATION SLAVE'
 
      mysqldumpdir: /backup/mysqldump
+     mylvmbackupdir: /backup/mylvmbackup
 
      # following files copied to /home/mysql/etc
      mysqlcustomcnf:
         - mydumpdaily.cnf
+        - mylvmdaily.cnf
 
      mysqlcron:
         - name: mysqldump_full
@@ -101,3 +103,11 @@
           hour: "02"
           minute: "30"
           jobname: "mysqldump --defaults-extra-file=/home/mysql/etc/mydumpdaily.cnf --login-path=mysqldump | gzip -1 -c > {{ mysqldumpdir }}/mysqldump_$(date '+%y%m%d%H%M').sql.gz"
+
+        - name: mylvmbackup
+          disabled: False
+          day: "*"
+          weekday: "0-6"
+          hour: "04"
+          minute: "30"
+          jobname: "sudo /bin/mylvmbackup --configfile=/home/mysql/etc/mylvmdaily.cnf"

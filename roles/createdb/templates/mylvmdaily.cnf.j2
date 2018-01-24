@@ -1,0 +1,26 @@
+[mysql]
+user=mylvmbackup
+password={{ mysql_password_mylvmbackup }}
+
+[lvm]
+vgname=rootvg
+lvname=mysqllv
+#backuplv=
+lvsize=2G
+ 
+[fs]
+backupdir={{ mylvmbackupdir }}
+mountdir=/var/tmp/mylvmbackup/mnt/
+ 
+[tools]
+compress=gzip
+ 
+[misc]
+backuptype=tar
+backupretention=0
+datefmt=%Y%m%d_%H%M%S
+innodb_recover=0
+ 
+[logging]
+# 'console' (STDOUT, STDERR), 'syslog' or 'both'.
+log_method=both

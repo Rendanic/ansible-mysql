@@ -3,6 +3,7 @@
         - mysql-server
         - mytop
         - mylvmbackup
+        - zbackup
 
      install_percona: True
 

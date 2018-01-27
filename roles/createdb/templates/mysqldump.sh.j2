@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# {{ ansible_managed }}
+#
+
+defaultcnf=/home/mysql/etc/mydumpdaily.cnf
+backupfile={{ mysqldumpdir  }}/mysqldump_$(date '+%y%m%d%H%M').sql.gz
+
+mysqldump --defaults-extra-file=${defaultcnf} --login-path=mysqldump | gzip -1 -c > ${backupfile}

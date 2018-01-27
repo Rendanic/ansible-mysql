@@ -43,9 +43,21 @@
     mode: 0700
     owner: mysql
   with_items:
+    - /home/mysql/bin
     - /home/mysql/etc
     - /home/mysql/log
     - /home/mysql/etc/mylvmbackuphook  
+
+- name: Copy custom sh-Files for mysql
+  template:
+    src:    "{{ item }}.j2"
+    dest:   /home/mysql/bin/{{ item }}
+    mode:   0755
+    group:  mysql
+    owner:  mysql
+    backup: True
+  with_items:
+    - mysqldump.sh
 
 - name: Copy custom cnf-Files
   template:

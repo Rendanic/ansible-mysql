@@ -15,6 +15,7 @@
              - [ 'port',                             '3306' ]
              - [ 'bind-address',                     '0.0.0.0' ]
              - [ 'socket',                           '/var/lib/mysql/mysql.sock' ]
+             - [ 'plugin-load',                      'auth_socket=auth_socket.so' ]
              - [ 'pid-file',                         '/var/run/mysqld/mysqld.pid' ]
              - [ 'log-error',                        '/var/log/mysqld.log' ]
              - [ 'log_bin',                          'binary-log' ]

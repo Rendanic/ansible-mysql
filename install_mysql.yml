@@ -6,6 +6,7 @@
 
   roles:
      - install_mysql
+     - hostfs
      - percona_software
      - createdb
      - mysql_config_editor

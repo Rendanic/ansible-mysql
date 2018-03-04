@@ -9,4 +9,5 @@
      - hostfs
      - percona_software
      - createdb
+     - configure_mysql
      - mysql_config_editor

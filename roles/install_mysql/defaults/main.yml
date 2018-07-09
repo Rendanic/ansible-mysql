@@ -1,2 +1,16 @@
 ---
 host_fs_layout_vgdisks: "{%- for disk in item.disk -%} {{disk.pvname}} {%- if not loop.last -%},{%- endif -%}{% endfor %}"
+
+yumrepos: '{% if ansible_distribution == "CentOS" %}{{yumrepos_centos7}}
+           {%- elif ansible_distribution == "OracleLinux" %}{{yumrepos_ol7}}
+           {%- endif %}'
+
+yumrepos_centos7:
+  - "mysql57-community"
+
+yumrepos_ol7:
+  - ol7_MySQL57
+  - ol7_addons
+  - ol7_optional_latest
+
+

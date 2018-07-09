@@ -1,11 +1,28 @@
 ---
 
+- name: Install yum Repository RPM on CentOS
+  shell: yum install -y https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm ; exit 0
+  args:
+    executable: /bin/bash
+  when: ansible_distribution == "CentOS"
+  tags: yumrepo
+
+- name: disable MySQL 8 on CentOS
+  shell: yum-config-manager --disable {{ item }}
+  args:
+    executable: /bin/bash
+  with_items:
+    - "mysql80-community"
+  when: ansible_distribution == "CentOS"
+  tags: yumrepo
+
 - name: enable Repos
   shell: yum-config-manager --enable {{ item }}
+  args:
+    executable: /bin/bash
   with_items:
-     - ol7_MySQL57
-     - ol7_addons
-     - ol7_optional_latest
+     - "{{yumrepos}}"
+  tags: yumrepo
 
 - name: Install MySQL + Tools
   yum: name={{ item }} state=present
